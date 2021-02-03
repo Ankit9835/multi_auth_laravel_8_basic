@@ -1,7 +1,10 @@
 <?php
 
+
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\MainUserController;
 
 
 /*
@@ -25,9 +28,19 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin:admin']],function(){
 });
 
 Route::middleware(['auth:sanctum,admin', 'verified'])->get('/admin/dashboard', function () {
-    return view('dashboard');
+    return view('admin.index');
 })->name('dashboard');
 
 Route::middleware(['auth:sanctum,web', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
+	if(Auth::check() && Auth::user()->name == 'Ankit'){
+            return view('user.index');
+        } if(Auth::check() && Auth::user()->name == 'Anand'){
+            return view('dashboard');
+        }
+
+    
 })->name('dashboard');
+
+Route::get('user/logout',[MainUserController::class,'userLogout'])->name('user.logout');
+
+Route::get('admin/logout',[AdminController::class,'destroy'])->name('admin.logout');
